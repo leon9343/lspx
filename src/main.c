@@ -1,6 +1,3 @@
-// int a 5;
-// function b (args) (function);
-// print(arg);
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -17,14 +14,7 @@ int main(int argc, char** argv) {
 		if(error(FEW_ARGS))
 			exit(1);
 
-	char* file_path = NULL;
-
-	for(int i = 0; i < argc; i++) {
-		if(argv[i] == "-f") {
-			strcpy(file_path, argv[i+1]);
-			i++;
-		}
-	}
+	char* file_path = argv[1];
 
 	char* src_code = read_file(file_path);
 
@@ -32,7 +22,6 @@ int main(int argc, char** argv) {
 		if(error(NO_FILE))
 			exit(2);
 
-	// PARSER p_status = parse(argv[1]);
 
 	printf("%s\n", src_code);
 
