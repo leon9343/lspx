@@ -2,8 +2,12 @@ all:
 	gcc ./src/*.c -o lpsx
 
 dbg:
-	gcc -g ./src/*.c -o lpsx
+	gcc -ggdb ./src/*.c -o lpsx
 
 # for debugging only, assumes a test.lp file to compile
 run:
 	gcc ./src/*.c -o lpsx && ./lpsx test.lp
+
+# for testing purposes
+psx:
+	wine ccpsx -llibpad -O3 -Xo$80010000 psx.c -opsx.cpe

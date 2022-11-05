@@ -50,3 +50,11 @@ char* read_file(char* path) {
 
 	return buffer;
 }
+
+void write_file(char* path, char* buffer) {
+	FILE* file = fopen(path, "w");
+
+	fprintf(file, buffer);
+
+	fclose(file);
+}
