@@ -38,3 +38,7 @@ typedef struct {
 
 void init_compiler(COMPILER* c);
 char* compile(COMPILER* c, PARSER* p);
+
+void type_check(char* buf);
+void args_check(char* buf, int argno);
+int fun_check(char* buf);

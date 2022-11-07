@@ -1,6 +1,6 @@
 #include "./include/error.h"
 
-int error(ERROR err) {
+int error(ERROR err, char* extra) {
 	int ret = 1;
 	switch(err.type) {
 		case GENERIC_ERROR:
@@ -14,6 +14,6 @@ int error(ERROR err) {
 			ret = 0;
 			break;
 	}
-	printf("%s\n", err.msg);
+	printf("%s - %s\n", err.msg, extra);
 	return ret;
 }

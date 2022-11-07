@@ -1,5 +1,9 @@
 #include "./include/compile.h"
 
+// ERRORS
+new_error(UNDEFINED_TYPE, TYPE_ERROR, "Undefined type");
+new_error(WRONG_ARGS, FUNC_ERROR, "Wrong number of arguments");
+
 void init_compiler(COMPILER *c) {
     c->graph_flag = 0;
 
@@ -16,6 +20,49 @@ void init_compiler(COMPILER *c) {
     }
 }
 
+// type check
+void type_check(char* buf) {
+    if(strcmp(buf, "POLY_F3") != 0 &&
+       strcmp(buf, "POLY_F4") != 0)
+            if(error(UNDEFINED_TYPE, buf))
+                exit(1);
+}
+
+// check argument number
+void args_check(char* buf, int argno) {
+    if(strcmp(buf, "setXY3") == 0 && argno != 6)
+        if(error(WRONG_ARGS, "setXY3"))
+            exit(1);
+    
+    if(strcmp(buf, "setXY4") == 0 && argno != 8)
+        if(error(WRONG_ARGS, "setXY4"))
+            exit(1);
+
+    if(strcmp(buf, "setRGB0") == 0 && argno != 3)
+        if(error(WRONG_ARGS, "setRGB0"))
+            exit(1);
+
+    if(strcmp(buf, "setPolyF3") == 0 && argno != 0)
+        if(error(WRONG_ARGS, "setPolyF3"))
+            exit(1);
+
+    if(strcmp(buf, "setPolyF4") == 0 && argno != 0)
+        if(error(WRONG_ARGS, "setPolyF4"))
+            exit(1);
+}
+
+// function check 
+int fun_check(char* buf) {
+    if(strcmp(buf, "setXY3") == 0    || 
+       strcmp(buf, "setXY4") == 0    || 
+       strcmp(buf, "setRGB0") == 0   || 
+       strcmp(buf, "setPolyF3") == 0 || 
+       strcmp(buf, "setPolyF4") == 0)
+       return 1;
+
+    return 0;
+}
+
 
 char* compile(COMPILER* c, PARSER* p) {
     int i = 0;
@@ -27,6 +74,7 @@ char* compile(COMPILER* c, PARSER* p) {
         if(strcmp(p->program[i], "init") == 0) {
             if(strcmp(p->program[i+1], "graphics") == 0)
                 c->graph_flag = 1;
+
             // TODO: add in pad and audio later
 
             i += 2;
@@ -39,13 +87,15 @@ char* compile(COMPILER* c, PARSER* p) {
             c->variables[var_count].name = p->program[i+2];
             c->variables[var_count].status = 1;
 
+            type_check(c->variables[var_count].type);
+
             var_count++;
             i += 2;
         }
 
         // FUNCTIONS
         // TODO: make a function that checks this condition and throw an error if not
-        if(strcmp(p->program[i], "setXY3") == 0 || strcmp(p->program[i], "setXY4") == 0 || strcmp(p->program[i], "setPolyF4") == 0 || strcmp(p->program[i], "setRGB0") == 0 || strcmp(p->program[i], "setPolyF3") == 0) {
+        if(fun_check(p->program[i])) {
             int k=0;
 
             c->functions[fun_count].fun = p->program[i];
@@ -58,6 +108,8 @@ char* compile(COMPILER* c, PARSER* p) {
                 i++;
                 k++;
             }
+
+            args_check(c->functions[fun_count].fun, k);
             
             fun_count++;
         }
@@ -73,8 +125,6 @@ char* compile(COMPILER* c, PARSER* p) {
             i++;
 
     }
-
-    printf("%d\n", fun_count);
 
     // C code generation
 

@@ -13,7 +13,7 @@ new_error(NO_FILE, FILE_ERROR, "no input file was given");
 
 int main(int argc, char** argv) {
 	if(argc < 3) 
-		if(error(FEW_ARGS))
+		if(error(FEW_ARGS, ""))
 			exit(1);
 
 	char* file_path = argv[1];
@@ -21,7 +21,7 @@ int main(int argc, char** argv) {
 	char* src_code = read_file(file_path);
 
 	if(!src_code)
-		if(error(NO_FILE))
+		if(error(NO_FILE, ""))
 			exit(2);
 
 	PARSER* parser = (PARSER*)malloc(sizeof(PARSER));

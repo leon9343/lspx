@@ -7,9 +7,11 @@ typedef struct {
 	enum type {
 		GENERIC_ERROR,	
 		FILE_ERROR,
+		TYPE_ERROR,
+		FUNC_ERROR,
 		WARNING
 	} type;
 	char* msg;
 } ERROR;
 
-int error(ERROR err);
+int error(ERROR err, char* extra);

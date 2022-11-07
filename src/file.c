@@ -12,14 +12,14 @@ long size_file(FILE* file) {
 	fpos_t org;
 
 	if(fgetpos(file, &org) != 0)
-		if(error(FGETPOS))
+		if(error(FGETPOS, ""))
 			exit(1);
 	
 	fseek(file, 0, SEEK_END);
 	long out = ftell(file);
 
 	if(fsetpos(file, &org) != 0)
-		if(error(FSETPOS))
+		if(error(FSETPOS, ""))
 			exit(1);
 
 	return out;
@@ -30,7 +30,7 @@ char* read_file(char* path) {
 
 	if(!file) {
 		free(file);
-		if(error(FOPEN))
+		if(error(FOPEN, ""))
 			exit(1);
 	}
 
@@ -41,7 +41,7 @@ char* read_file(char* path) {
 
 	if(num_of_bytes != size) {
 		free(buffer);
-		if(error(FREAD))
+		if(error(FREAD, ""))
 			exit(1);
 	}
 
@@ -54,7 +54,13 @@ char* read_file(char* path) {
 void write_file(char* path, char* buffer) {
 	FILE* file = fopen(path, "w");
 
-	fprintf(file, buffer);
+	if(!file) {
+		free(file);
+		if(error(FOPEN, ""))
+			exit(1);
+	}
+
+	fprintf(file, "%s", buffer);
 
 	fclose(file);
 }
