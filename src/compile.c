@@ -33,6 +33,7 @@ char* compile(COMPILER* c, PARSER* p) {
         }
 
         // VARIABLES
+        // TODO: make a function that checks this condition and throw an error if not
         if(strcmp(p->program[i], "def") == 0) {
             c->variables[var_count].type = p->program[i+1];
             c->variables[var_count].name = p->program[i+2];
@@ -43,7 +44,8 @@ char* compile(COMPILER* c, PARSER* p) {
         }
 
         // FUNCTIONS
-        if(strcmp(p->program[i], "setXY3") == 0 || strcmp(p->program[i], "setRGB0") == 0 || strcmp(p->program[i], "setPolyF3") == 0) {
+        // TODO: make a function that checks this condition and throw an error if not
+        if(strcmp(p->program[i], "setXY3") == 0 || strcmp(p->program[i], "setXY4") == 0 || strcmp(p->program[i], "setPolyF4") == 0 || strcmp(p->program[i], "setRGB0") == 0 || strcmp(p->program[i], "setPolyF3") == 0) {
             int k=0;
 
             c->functions[fun_count].fun = p->program[i];
@@ -58,12 +60,11 @@ char* compile(COMPILER* c, PARSER* p) {
             }
             
             fun_count++;
-            // maybe?
         }
 
         // COMMENTS
         /*
-        if(strcmp(p.program[i], ";") == 0) {
+        if(strcmp(p.program[i], "/") == 0) {
             while(p.program[i] != "\n")
                 i++;
         }
@@ -143,7 +144,8 @@ char* compile(COMPILER* c, PARSER* p) {
         char* var_dr = (char*)malloc(20 * sizeof(char));
         char* var_ty = c->variables[v].type; 
         // TODO: add more later
-        if(strcmp(var_ty, "POLY_F3") == 0) {
+        // TODO: make a function that checks this condition and throw an error if not
+        if(strcmp(var_ty, "POLY_F3") == 0 || strcmp(var_ty, "POLY_F4") == 0) {
             sprintf(var_dr, "DrawPrim(&%s);\n", c->variables[v].name);
             strcat(output, var_dr);
         }
