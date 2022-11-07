@@ -23,13 +23,18 @@ void init_compiler(COMPILER *c) {
 // type check
 void type_check(char* buf) {
     if(strcmp(buf, "POLY_F3") != 0 &&
-       strcmp(buf, "POLY_F4") != 0)
+       strcmp(buf, "POLY_F4") != 0 &&
+       strcmp(buf, "LINE_F2") != 0)
             if(error(UNDEFINED_TYPE, buf))
                 exit(1);
 }
 
 // check argument number
 void args_check(char* buf, int argno) {
+    if(strcmp(buf, "setXY2") == 0 && argno != 4)
+        if(error(WRONG_ARGS, "setXY2"))
+            exit(1);
+
     if(strcmp(buf, "setXY3") == 0 && argno != 6)
         if(error(WRONG_ARGS, "setXY3"))
             exit(1);
@@ -53,14 +58,27 @@ void args_check(char* buf, int argno) {
 
 // function check 
 int fun_check(char* buf) {
-    if(strcmp(buf, "setXY3") == 0    || 
+    if(strcmp(buf, "setXY2") == 0    || 
+       strcmp(buf, "setXY3") == 0    || 
        strcmp(buf, "setXY4") == 0    || 
        strcmp(buf, "setRGB0") == 0   || 
        strcmp(buf, "setPolyF3") == 0 || 
-       strcmp(buf, "setPolyF4") == 0)
+       strcmp(buf, "setPolyF4") == 0 ||
+       strcmp(buf, "setLineF2") == 0)
        return 1;
 
     return 0;
+}
+
+// check if its a primitive
+int is_prim(char* buf) {
+    if(strcmp(buf, "POLY_F3") == 0 ||
+       strcmp(buf, "POLY_F4") == 0 ||
+       strcmp(buf, "LINE_F2") == 0)
+            return 1;
+    
+    else
+        return 0;
 }
 
 
@@ -115,12 +133,11 @@ char* compile(COMPILER* c, PARSER* p) {
         }
 
         // COMMENTS
-        /*
-        if(strcmp(p.program[i], "/") == 0) {
-            while(p.program[i] != "\n")
-                i++;
+        // TODO: this has some priority
+        if(strcmp(p->program[i], "#") == 0) {
+            // ignore all code untill unother comment char is met
+            while(strcmp(p->program[i++], "#") != 0) {}
         }
-        */
         else
             i++;
 
@@ -193,9 +210,10 @@ char* compile(COMPILER* c, PARSER* p) {
     while(v < var_count) {
         char* var_dr = (char*)malloc(20 * sizeof(char));
         char* var_ty = c->variables[v].type; 
+
         // TODO: add more later
-        // TODO: make a function that checks this condition and throw an error if not
-        if(strcmp(var_ty, "POLY_F3") == 0 || strcmp(var_ty, "POLY_F4") == 0) {
+
+        if(is_prim(var_ty)) {
             sprintf(var_dr, "DrawPrim(&%s);\n", c->variables[v].name);
             strcat(output, var_dr);
         }

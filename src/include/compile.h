@@ -42,3 +42,4 @@ char* compile(COMPILER* c, PARSER* p);
 void type_check(char* buf);
 void args_check(char* buf, int argno);
 int fun_check(char* buf);
+int is_prim(char* buf);
